@@ -110,7 +110,7 @@ int main()
     ull goodClientMoney = ElonMusk.getMoney();
     if(goodClientMoney == goodClientStart + transactionsAmount)
     {
-        std::cout << "Good client have expected amount of money: " << goodClientMoney << std::endl;
+        std::cout << "Good client has expected amount of money: " << goodClientMoney << std::endl;
     }
     else
     {
@@ -123,6 +123,6 @@ int main()
     }
     else
     {
-        std::cout << "Bad client have problem(s) with transactions. Bad client has " << JeffBezos.getMoney() << std::endl;
+        std::cout << "Bad client has problem(s) with transactions. Bad client has " << JeffBezos.getMoney() << std::endl;
     }
 }
