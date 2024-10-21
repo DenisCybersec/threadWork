@@ -1,17 +1,14 @@
-#include<thread>
 #include<iostream>
+#include<thread>
+#include<atomic>
 #include<vector>
-#include<mutex>
-#include<cmath>
-
-typedef unsigned long long ull; // Imagine our client store tons of money
+typedef unsigned long long ull; 
+std::atomic<int> i;
 class BankClient
 {
     public:
         virtual void depositMoney(ull amount) = 0;
         virtual void withdrawMoney(ull amount) = 0;
-    private:
-        ull moneyAmount_;
 };
 class GoodBankClient : public BankClient // 'Good' implementation with mutex
 {
@@ -19,7 +16,6 @@ class GoodBankClient : public BankClient // 'Good' implementation with mutex
         GoodBankClient(ull moneyAmount) : moneyAmount_(moneyAmount) {}
         void depositMoney(ull amount)
         {
-            std::lock_guard<std::mutex> lock(mutex_); // Mutex for disabling data race for moneyAmount_
             for(size_t i = 0;i<amount;i++) // some 300 IQ coding, so difference would be more noticeable
             {
                 moneyAmount_ += 1;
@@ -27,7 +23,6 @@ class GoodBankClient : public BankClient // 'Good' implementation with mutex
         }
         void withdrawMoney(ull amount)
         {
-            std::lock_guard<std::mutex> lock(mutex_); // Mutex for disabling data race for moneyAmount_
             if(amount < moneyAmount_)
             {
                 for(size_t i = 0;i<amount;i++) // some 300 IQ coding, so difference would be more noticeable
@@ -42,8 +37,7 @@ class GoodBankClient : public BankClient // 'Good' implementation with mutex
         }
         ull getMoney(){return moneyAmount_;}   
     private:
-        ull moneyAmount_;
-        std::mutex mutex_;
+        std::atomic<ull> moneyAmount_; // Atomic counter for no data race
 };
 class BadBankClient : public BankClient // Bad implementation without std::mutex, with data race
 {
